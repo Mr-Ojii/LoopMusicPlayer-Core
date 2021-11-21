@@ -159,8 +159,6 @@ namespace LoopMusicPlayer.Core
             this.StreamHandle = Bass.CreateStream(reader.SampleRate, reader.Channels, BassFlags.Float, this.tSTREAMPROC);
             ChangeVolume(volume);
             Bass.ChannelSetSync(this.StreamHandle, SyncFlags.Stalled, 0, this.tSYNCPROC);
-
-            Bass.ChannelPlay(this.StreamHandle);
         }
 
         public void Seek(long sample)
