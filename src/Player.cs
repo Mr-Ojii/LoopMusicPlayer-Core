@@ -66,12 +66,9 @@ namespace LoopMusicPlayer.Core
         {
             get
             {
-                lock (LockObj)
-                {
-                    return reader.SamplePosition;
-                }
+                return reader.SamplePosition;
             }
-            }
+        }
 
         public TimeSpan TotalTime
         {
@@ -85,10 +82,7 @@ namespace LoopMusicPlayer.Core
         {
             get
             {
-                lock (LockObj)
-                {
-                    return reader.TimePosition;
-                }
+                return reader.TimePosition;
             }
         }
 
@@ -123,8 +117,6 @@ namespace LoopMusicPlayer.Core
         public readonly string FilePath;
 
         private bool Ended;
-
-        private object LockObj = new object();
 
         public Player(string filepath, double volume, bool streaming)
         {

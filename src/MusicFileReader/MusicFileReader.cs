@@ -10,6 +10,7 @@ namespace LoopMusicPlayer.Core
 {
     internal class MusicFileReader : IMusicFileReader
     {
+        private object LockObj = new object();
         public long TotalSamples
         {
             get;
@@ -43,12 +44,18 @@ namespace LoopMusicPlayer.Core
         {
             get
             {
-                return _SamplePosition;
+                lock (LockObj)
+                {
+                    return _SamplePosition;
+                }
             }
             set
             {
-                if (value <= TotalSamples)
-                    this._SamplePosition = value;
+                lock (LockObj)
+                {
+                    if (value <= TotalSamples)
+                        this._SamplePosition = value;
+                }
             }
         }
         private long _SamplePosition;
@@ -63,16 +70,6 @@ namespace LoopMusicPlayer.Core
                 int hour = (int)(time / 3600) % 24;
                 int day = (int)(time / 86400);
                 return new TimeSpan(day, hour, minute, second, millisecond);
-            }
-            set 
-            {
-                double time = 0;
-                time += value.Days * 86400;
-                time += value.Hours * 3600;
-                time += value.Minutes * 60;
-                time += value.Seconds;
-                time += value.Milliseconds * 0.001;
-                this.SamplePosition = (long)(this.SampleRate * time);
             }
         }
 
