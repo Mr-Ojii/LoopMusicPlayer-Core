@@ -15,15 +15,26 @@ namespace LoopMusicPlayer.Core
         private int StreamHandle = -1;
         private StreamProcedure tSTREAMPROC = null;
         private SyncProcedure tSYNCPROC = null;
+        private uint _LoopCount = 0;
+        private object LockObj = new object();
+
         public readonly bool IsLoop = false;
         public readonly long LoopStart = 0;
         public readonly long LoopEnd = 0;
         public bool NextIsLoop = true;
         public uint LoopCount
         {
-            get;
-            private set;
-        } = 0;
+            get
+            {
+                lock(LockObj)
+                    return _LoopCount;
+            }
+            private set
+            {
+                lock(LockObj)
+                    _LoopCount = value;
+            }
+        }
 
         public TimeSpan LoopStartTime
         {
