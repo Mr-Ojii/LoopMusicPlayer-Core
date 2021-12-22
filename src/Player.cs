@@ -225,16 +225,16 @@ namespace LoopMusicPlayer.Core
 
         public int StreamProc(int handle, IntPtr buffer, int length, IntPtr user)
         {
-            int num;
+            int num = 0;
             float[] tmp = new float[(int)(Const.byte_per_float * length)];
 
             if (NextIsLoop && reader.SamplePosition + tmp.Length >= LoopEnd)
             {
                 int tmplength = (int)(LoopEnd - reader.SamplePosition);
-                num = reader.ReadSamples(tmp, 0, tmplength);
+                num += reader.ReadSamples(tmp, 0, tmplength);
                 reader.SamplePosition = LoopStart;
-                num = reader.ReadSamples(tmp, tmplength, tmp.Length - tmplength);
-                num = length;
+                num += reader.ReadSamples(tmp, tmplength, tmp.Length - tmplength);
+                num = (int)(num * Const.float_per_byte);
                 this.LoopCount++;
                 if (LoopAction != null) LoopAction(this, EventArgs.Empty);
             }
@@ -244,7 +244,6 @@ namespace LoopMusicPlayer.Core
             }
 
             if (num < 0) num = 0;
-            if (num != 0) num = length;
 
             unsafe
             {
@@ -265,7 +264,7 @@ namespace LoopMusicPlayer.Core
             }
         }
 
-        public void Dispose() 
+        public void Dispose()  
         {
             try
             {
