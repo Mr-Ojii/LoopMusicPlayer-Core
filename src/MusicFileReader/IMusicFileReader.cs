@@ -17,6 +17,6 @@ namespace LoopMusicPlayer.Core
         long SamplePosition { get; set; }
         TimeSpan TimePosition { get; }
 
-        int ReadSamples(float[] buffer, int offset, int count);
+        int ReadSamples(float[] buffer, int sample_offset, int sample_count);
     }
 }
