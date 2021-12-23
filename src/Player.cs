@@ -226,21 +226,19 @@ namespace LoopMusicPlayer.Core
         public int StreamProc(int handle, IntPtr buffer, int length, IntPtr user)
         {
             int num = 0;
-            int floatlength = (int)(Const.byte_per_float * length);
 
-            if (NextIsLoop && reader.SamplePosition + floatlength >= LoopEnd)
+            if (NextIsLoop && reader.SamplePosition + (int)(Const.byte_per_float * length) >= LoopEnd)
             {
-                int tmplength = (int)(LoopEnd - reader.SamplePosition);
+                int tmplength = (int)((LoopEnd - reader.SamplePosition) * Const.float_per_byte);
                 num += reader.ReadSamples(buffer, 0, tmplength);
                 reader.SamplePosition = LoopStart;
-                num += reader.ReadSamples(buffer, tmplength, floatlength - tmplength);
-                num = (int)(num * Const.float_per_byte);
+                num += reader.ReadSamples(buffer, tmplength, length - tmplength);
                 this.LoopCount++;
                 if (LoopAction != null) LoopAction(this, EventArgs.Empty);
             }
             else
             {
-                num = (int)(reader.ReadSamples(buffer, 0, floatlength) * Const.float_per_byte);
+                num = reader.ReadSamples(buffer, 0, length);
             }
 
             if (num < 0) num = 0;

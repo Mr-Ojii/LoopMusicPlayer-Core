@@ -106,19 +106,20 @@ namespace LoopMusicPlayer.Core
             Bass.SampleFree(handle);
         }
 
-        public int ReadSamples(IntPtr buffer, int sample_offset, int sample_count)
+        public int ReadSamples(IntPtr buffer, int byte_offset, int byte_count)
         {
+            int sample_count = (int)(byte_count * Const.byte_per_float);
             if ((int)(this.TotalSamples - this.SamplePosition) * this.Channels < sample_count)
                 sample_count = (int)(this.TotalSamples - this.SamplePosition) * this.Channels;
 
             unsafe{
                 fixed(float* bufp = &this.Buf[this.SamplePosition * this.Channels])
-                    Buffer.MemoryCopy(bufp, (void*)IntPtr.Add(buffer, (int)(sample_offset * Const.float_per_byte)), (long)((this.Buf.Length-this.SamplePosition * this.Channels)* Const.float_per_byte),(int)(sample_count * Const.float_per_byte));
+                    Buffer.MemoryCopy(bufp, (void*)IntPtr.Add(buffer, byte_offset), (long)((this.Buf.Length-this.SamplePosition * this.Channels)* Const.float_per_byte),(int)(sample_count * Const.float_per_byte));
             }
 
             this.SamplePosition += (sample_count / this.Channels);
 
-            return sample_count;
+            return (int)(sample_count * Const.float_per_byte);
         }
 
         public void Dispose() 
