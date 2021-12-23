@@ -93,9 +93,9 @@ namespace LoopMusicPlayer.Core
             this.Tags = TagReader.Read(this.handle);
         }
 
-        public int ReadSamples(float[] buffer, int sample_offset, int sample_count)
+        public int ReadSamples(IntPtr buffer, int sample_offset, int sample_count)
         {
-            return (int)(Bass.ChannelGetData(this.handle, buffer, (int)(sample_count * Const.float_per_byte)) * Const.byte_per_float);
+            return (int)(Bass.ChannelGetData(this.handle, IntPtr.Add(buffer, (int)(sample_offset * Const.float_per_byte)), (int)(sample_count * Const.float_per_byte)) * Const.byte_per_float);
         }
 
         public void Dispose()
