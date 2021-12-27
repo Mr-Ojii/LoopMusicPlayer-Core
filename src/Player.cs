@@ -109,7 +109,7 @@ namespace LoopMusicPlayer.Core
         {
             get
             {
-                return !string.IsNullOrEmpty(reader.Tags.Artist) ? reader.Tags.Artist : "";
+                return !string.IsNullOrEmpty(reader.Tags.Artist) ? reader.Tags.Artist : string.Empty;
             }
         }
 
@@ -166,15 +166,10 @@ namespace LoopMusicPlayer.Core
 
         public void Seek(long sample)
         {
-            PlaybackState state = Bass.ChannelIsActive(this.StreamHandle);
-            Bass.ChannelPause(this.StreamHandle);
             this.reader.SamplePosition = sample;
 
             if (sample >= this.LoopEnd)
                 this.NextIsLoop = false;
-
-            if (state == PlaybackState.Playing)
-                Bass.ChannelPlay(this.StreamHandle);
         }
 
         public void ChangeVolume(double volume)//0~1
@@ -184,7 +179,6 @@ namespace LoopMusicPlayer.Core
 
         public void Play()
         {
-            this.reader.SamplePosition = 0;
             Bass.ChannelPlay(this.StreamHandle);
         }
 
