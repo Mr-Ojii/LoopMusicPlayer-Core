@@ -123,7 +123,7 @@ namespace LoopMusicPlayer.Core
 
         public event EventHandler LoopAction;
 
-        public Action EndAction;
+        public event EventHandler EndAction;
 
         public readonly string FilePath;
 
@@ -246,7 +246,7 @@ namespace LoopMusicPlayer.Core
             {
                 Ended = true;
                 if(this.EndAction != null)
-                    this.EndAction();
+                    this.EndAction(this, EventArgs.Empty);
             }
         }
 
