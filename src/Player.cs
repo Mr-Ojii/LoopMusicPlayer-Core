@@ -129,14 +129,11 @@ namespace LoopMusicPlayer.Core
 
         private bool Ended;
 
-        public Player(string filepath, double volume, bool streaming)
+        public Player(string filepath, double volume)
         {
             this.FilePath = filepath;
             Ended = false;
-            if (streaming)
-                this.reader = new MusicFileReaderStreaming(filepath);
-            else
-                this.reader = new MusicFileReader(filepath);
+            this.reader = new MusicFileReaderStreaming(filepath);
 
             this.IsLoop = !string.IsNullOrEmpty(reader.Tags.GetTag("LOOPSTART")) && (!string.IsNullOrEmpty(reader.Tags.GetTag("LOOPLENGTH")) || !string.IsNullOrEmpty(reader.Tags.GetTag("LOOPEND")));
             if (this.IsLoop)
