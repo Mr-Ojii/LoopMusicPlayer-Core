@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ManagedBass;
+using ManagedBass.Flac;
+using ManagedBass.Opus;
 
 namespace LoopMusicPlayer.Core
 {
@@ -74,11 +77,33 @@ namespace LoopMusicPlayer.Core
             }
         }
 
-        private int handle;
+        private int handle = 0;
 
         public MusicFileReaderStreaming(string FilePath)
         {
-            this.handle = Bass.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
+            for (int i = 0; i < 3 && this.handle == 0; i++)
+            {
+                try
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            this.handle = Bass.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
+                            break;
+                        case 1:
+                            this.handle = BassFlac.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
+                            break;
+                        case 2:
+                            this.handle = BassOpus.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
+                            break;
+                    }
+                }
+                catch (DllNotFoundException e)
+                {
+                    Trace.TraceError(e.ToString());
+                }
+            }
+
 
             if (Bass.LastError != Errors.OK)
                 throw new Exception(Bass.LastError.ToString());
