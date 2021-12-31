@@ -4,6 +4,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 using ManagedBass;
 using LoopMusicPlayer.TagReaderExtensionMethods;
 
@@ -11,6 +12,28 @@ namespace LoopMusicPlayer.Core
 {
     public class Player : IDisposable
     {
+	    [DllImport("libdl.so")]
+	    static extern IntPtr dlopen(string fileName, int flags);
+	
+        [DllImport("libdl.so")]
+        static extern int dlclose(IntPtr libraryHandle);
+        public static void Init(string BasePath) {
+	        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+	            libraryHandle = dlopen(BasePath + "libbass.so", 0x101);
+            }
+            Bass.Init(Flags: DeviceInitFlags.Frequency);
+            initialized = true;
+        }
+
+        public static void Free() {
+            Bass.Free();
+	        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+	            dlclose(libraryHandle);
+            initialized = false;
+        }
+        private static bool initialized = false;
+        private static IntPtr libraryHandle;
+
         private IMusicFileReader reader = null;
         private int StreamHandle = -1;
         private StreamProcedure tSTREAMPROC = null;
@@ -131,6 +154,8 @@ namespace LoopMusicPlayer.Core
 
         public Player(string filepath, double volume)
         {
+            if(!initialized)
+                throw new Exception("Player class is not initialized.");
             this.FilePath = filepath;
             Ended = false;
             this.reader = new MusicFileReaderStreaming(filepath);

@@ -12,8 +12,10 @@
 
   <ItemGroup>
     <PackageReference Include="ManagedBass" Version="3.1.0" />
+    <PackageReference Include="ManagedBass.Dsd" Version="3.1.0" />
     <PackageReference Include="ManagedBass.Flac" Version="3.1.0" />
     <PackageReference Include="ManagedBass.Opus" Version="3.1.0" />
+    <PackageReference Include="ManagedBass.Wv" Version="3.1.0" />
   </ItemGroup>
 
 </Project>

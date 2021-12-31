@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using ManagedBass;
 using ManagedBass.Flac;
 using ManagedBass.Opus;
+using ManagedBass.Dsd;
+using ManagedBass.Wv;
 
 namespace LoopMusicPlayer.Core
 {
@@ -81,7 +83,7 @@ namespace LoopMusicPlayer.Core
 
         public MusicFileReaderStreaming(string FilePath)
         {
-            for (int i = 0; i < 3 && this.handle == 0; i++)
+            for (int i = 0; i < 5 && this.handle == 0; i++)
             {
                 try
                 {
@@ -95,6 +97,12 @@ namespace LoopMusicPlayer.Core
                             break;
                         case 2:
                             this.handle = BassOpus.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
+                            break;
+                        case 3:
+                            this.handle = BassDsd.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
+                            break;
+                        case 4:
+                            this.handle = BassWv.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
                             break;
                     }
                 }
