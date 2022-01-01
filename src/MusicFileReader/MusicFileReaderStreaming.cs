@@ -83,35 +83,7 @@ namespace LoopMusicPlayer.Core
 
         public MusicFileReaderStreaming(string FilePath)
         {
-            for (int i = 0; i < 5 && this.handle == 0; i++)
-            {
-                try
-                {
-                    switch (i)
-                    {
-                        case 0:
-                            this.handle = Bass.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
-                            break;
-                        case 1:
-                            this.handle = BassFlac.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
-                            break;
-                        case 2:
-                            this.handle = BassOpus.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
-                            break;
-                        case 3:
-                            this.handle = BassDsd.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
-                            break;
-                        case 4:
-                            this.handle = BassWv.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
-                            break;
-                    }
-                }
-                catch (DllNotFoundException e)
-                {
-                    Trace.TraceError(e.ToString());
-                }
-            }
-
+            this.handle = Bass.CreateStream(FilePath, Flags: BassFlags.Float | BassFlags.Decode);
 
             if (Bass.LastError != Errors.OK)
                 throw new Exception(Bass.LastError.ToString());
