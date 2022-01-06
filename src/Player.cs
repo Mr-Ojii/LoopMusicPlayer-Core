@@ -81,7 +81,6 @@ namespace LoopMusicPlayer.Core
         private IMusicFileReader reader = null;
         private int StreamHandle = -1;
         private StreamProcedure tSTREAMPROC = null;
-        private SyncProcedure tSYNCPROC = null;
         private uint _LoopCount = 0;
         private object LockObj = new object();
 
@@ -224,10 +223,8 @@ namespace LoopMusicPlayer.Core
             }
 
             this.tSTREAMPROC = new StreamProcedure(this.StreamProc);
-            this.tSYNCPROC = new SyncProcedure(this.EndProc);
             this.StreamHandle = Bass.CreateStream(reader.SampleRate, reader.Channels, BassFlags.Float, this.tSTREAMPROC);
             ChangeVolume(volume);
-            Bass.ChannelSetSync(this.StreamHandle, SyncFlags.Stalled, 0, this.tSYNCPROC);
         }
 
         public void Seek(long sample)
@@ -287,9 +284,9 @@ namespace LoopMusicPlayer.Core
         {
             int num = 0;
 
-            if (NextIsLoop && reader.SamplePosition + (int)(Const.byte_per_float * length) >= LoopEnd)
+            if (NextIsLoop && reader.SamplePosition + (int)(Const.byte_per_float * (length / reader.Channels)) >= LoopEnd)
             {
-                int tmplength = (int)((LoopEnd - reader.SamplePosition) * Const.float_per_byte);
+                int tmplength = (int)((LoopEnd - reader.SamplePosition)* reader.Channels * Const.float_per_byte);
                 num += reader.ReadSamples(buffer, 0, tmplength);
                 reader.SamplePosition = LoopStart;
                 num += reader.ReadSamples(buffer, tmplength, length - tmplength);
@@ -303,17 +300,16 @@ namespace LoopMusicPlayer.Core
 
             if (num < 0) num = 0;
 
-            return num;
-        }
-
-        public void EndProc(int handle, int channel, int data, IntPtr user)
-        {
-            if (!Ended)
-            {
-                Ended = true;
-                if(this.EndAction != null)
+            if(this.EndAction != null && num != length) {
+                if(!Ended) {
+                    Ended = true;
                     this.EndAction(this, EventArgs.Empty);
+                }
             }
+            else
+                Ended = false;
+
+            return num;
         }
 
         public void Dispose()  
