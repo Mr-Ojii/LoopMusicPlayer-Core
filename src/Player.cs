@@ -41,25 +41,27 @@ namespace LoopMusicPlayer.Core
 	        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
 	            libraryHandle = dlopen(BasePath + "libbass.so", 0x101);
             }
-            for (int i = 0; i < bassPluginsList.Length; i++)
-            {
-                string pluginName = bassPluginsList[i];
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            //Linux環境で、bassflacは2回以上Loadを実施しないと、正常にLoadできない(なんで?)
+            for (int j = 0; j < 2; j++)
+                for (int i = 0; i < bassPluginsList.Length; i++)
                 {
-                    pluginName = pluginName + ".dll";
+                    string pluginName = bassPluginsList[i];
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    {
+                        pluginName = pluginName + ".dll";
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        pluginName = "lib" + pluginName + ".dylib";
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        pluginName = "lib" + pluginName + ".so";
+                    }
+                    int pluginHandle = Bass.PluginLoad(BasePath + pluginName);
+                    if (pluginHandle != 0)
+                        bassPluginsHandleList.Add(pluginHandle);
                 }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    pluginName = "lib" + pluginName + ".dylib";
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    pluginName = "lib" + pluginName + ".so";
-                }
-                int pluginHandle = Bass.PluginLoad(BasePath + pluginName);
-                if (pluginHandle != 0)
-                    bassPluginsHandleList.Add(pluginHandle);
-            }
             Bass.Init(Flags: DeviceInitFlags.Frequency);
             initialized = true;
         }
