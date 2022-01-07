@@ -6,10 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ManagedBass;
-using ManagedBass.Flac;
-using ManagedBass.Opus;
-using ManagedBass.Dsd;
-using ManagedBass.Wv;
 
 namespace LoopMusicPlayer.Core
 {
