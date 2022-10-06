@@ -62,7 +62,7 @@ namespace LoopMusicPlayer.Core
                     if (pluginHandle != 0)
                         bassPluginsHandleList.Add(pluginHandle);
                 }
-            Bass.Init(Flags: DeviceInitFlags.Frequency);
+            Bass.Init();
             initialized = true;
         }
 
