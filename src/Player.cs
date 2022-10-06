@@ -32,14 +32,14 @@ namespace LoopMusicPlayer.Core
             };
         private static List<int> bassPluginsHandleList = new List<int>();
 
-	    [DllImport("libdl.so")]
-	    static extern IntPtr dlopen(string fileName, int flags);
-	
+        [DllImport("libdl.so")]
+        static extern IntPtr dlopen(string fileName, int flags);
+    
         [DllImport("libdl.so")]
         static extern int dlclose(IntPtr libraryHandle);
         public static void Init(string BasePath) {
-	        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
-	            libraryHandle = dlopen(BasePath + "libbass.so", 0x101);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                libraryHandle = dlopen(BasePath + "libbass.so", 0x101);
             }
             //Linux環境で、bassflacは2回以上Loadを実施しないと、正常にLoadできない(なんで?)
             for (int j = 0; j < 2; j++)
@@ -73,12 +73,13 @@ namespace LoopMusicPlayer.Core
             }
             bassPluginsHandleList.Clear();
             Bass.Free();
-	        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-	            dlclose(libraryHandle);
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                dlclose(libraryHandle);
+            libraryHandle = IntPtr.Zero;
             initialized = false;
         }
         private static bool initialized = false;
-        private static IntPtr libraryHandle;
+        private static IntPtr libraryHandle = IntPtr.Zero;
 
         private IMusicFileReader reader = null;
         private int StreamHandle = -1;
