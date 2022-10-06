@@ -8,8 +8,7 @@
 
 ## 開発環境(動作確認環境)
 OS
-* Windows 10(Ver.21H1) (x64)  
-* Linux Mint 20.2(Xfce) (x64)
+* Windows 11(Ver.22H2) (x64)
 
 Editor
 * Visual Studio Community 2022  
@@ -21,6 +20,7 @@ Editor
 |Ver.1.0.0.0|2021-11-18|初版(LoopMusicPlayer-CSharpより分離)                                                  |
 |Ver.2.0.0.0|2021-12-31|オンメモリ再生の削除                                                                  |
 |Ver.3.0.0.0|2022-01-07|導入されているBASSのプラグインに応じたコーデック・コンテナを読み込めるよう変更        |
+|Ver.3.0.0.1|2022-10-07|Bass.InitのFrequencyフラグの削除                                                      |
 
 ## 謝辞
 各依存パッケージを作成していただいてる方々に感謝を申し上げます。
